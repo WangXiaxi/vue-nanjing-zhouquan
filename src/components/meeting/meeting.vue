@@ -35,9 +35,29 @@
         <div class="con spec" v-show="curShowNav === 3">
           <div class="item">
             <div class="img-box">
+              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
             </div>
             <div class="info-box">
-              
+              <div class="name">嘉宾：王笑笑</div>
+              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="img-box">
+              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
+            </div>
+            <div class="info-box">
+              <div class="name">嘉宾：王笑笑</div>
+              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="img-box">
+              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
+            </div>
+            <div class="info-box">
+              <div class="name">嘉宾：王笑笑</div>
+              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
             </div>
           </div>
         </div>
@@ -46,6 +66,7 @@
           <p>随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试，随便写写测试测试测试随便写写测试测试测试</p>
         </div>
       </div>
+      <!-- 底部fixed -->
       <div class="meeting-bottom five">
         <div class="ico-box">
           <i class="ico-kf"></i>
@@ -64,8 +85,12 @@
           <span>购物车</span>
         </div>
         <a class="btn btn-1">参与围观</a>
-        <a class="btn">立即报名</a>
+        <a class="btn" @click="changeSpecIfShow">立即报名</a>
       </div>
+      <!-- 购买规格popup -->
+      <mt-popup v-model="popupVisible" position="bottom">
+        <goods-spec @emitEvent="buyNow"></goods-spec>
+      </mt-popup>
     </div>
   </div>
 </template>
@@ -73,23 +98,62 @@
 <script type="text/ecmascript-6">
 import { needMixin } from 'common/js/mixin'
 import HeaderPub from 'base/header/header-pub'
+import GoodsSpec from 'base/goods-spec/goods-spec'
 export default {
   mixins: [needMixin],
   components: {
-    HeaderPub
+    HeaderPub,
+    GoodsSpec
   },
   data () {
     return {
-      curShowNav: 1 // 显示当前是哪个导航 
+      curShowNav: 1, // 显示当前是哪个导航
+      popupVisible: false // 显示购买规格
     }
   },
+  created () {
+    this._getAllData() // 所有数据获取 然后赋值给对象，页面填充即可 所有接口都统一封装到api.js中统一管理
+  },
   methods: {
-    changeCurNav (index) {
+    _getAllData () {
+
+    },
+    buyNow (query) { // 立即购买操作
+      this.loading.open({ // 添加等待
+        spinnerType: 'snake'
+      })
+      console.log(query)
+      // 请求后台执行，后台请求成功返回订单id等 简要信息
+      // 模拟成功后跳转
+      setTimeout(() => {
+        this.loading.close()
+        this.$router.push({path: '/sure-order', query: {'id': 1}})
+      }, 500)
+    },
+    changeCurNav (index) { // 切换内容
       this.curShowNav = index
+    },
+    changeSpecIfShow () { // 是否显示购买规格操作
+      this.popupVisible = !this.popupVisible
     }
   }
 }
 </script>
+<style lang="stylus" rel="stylesheet/stylus">
+.meeting
+  .v-modal
+    background: none
+  .mint-popup-bottom
+    width: 100%
+    height: 350px
+    background: #fff
+.mint-toast.is-placemiddle // 要比mint-popup大
+  z-index: 2002
+.mint-popup.mint-popup-bottom
+  z-index: 2000 !important
+.v-modal
+  z-index: 1999 !important
+</style>
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import "~common/stylus/mixin"
 .meeting
@@ -147,13 +211,13 @@ export default {
       color: #f53e3f
     .end-time
       margin-top: 10px
-      background: url("~common/images/33@3x.png") left center/11px auto no-repeat
+      background: url("~common/images/33@3x.png") 1px center/11px auto no-repeat
     .people-num
       background: url("~common/images/morepeo.png") left center/14px auto no-repeat
     .time
       background: url("~common/images/time.png") left center/14px auto no-repeat
     .location
-      background: url("~common/images/locat.png") left center/12px auto no-repeat
+      background: url("~common/images/locat.png") 1px center/12px auto no-repeat
     .host
       background: url("~common/images/mine.png") left center/14px auto no-repeat
   .meeting-nav
@@ -206,15 +270,32 @@ export default {
         .item
           display: flex
           position: relative
+          margin-top: 15px
+          padding-bottom: 15px
+          &:first-child
+            margin-top: 10px
+          &:last-child
+            &:after
+              display: none
+          &:after
+            line-scale()
         .img-box
           width: 60px
           height: 60px
-          border-radius: 50px
-          background: red
+          img
+            width: 100%
+            height: 100%
+            border-radius: 50px
         .info-box
           flex: 1
-          margin-left: 12px
-          background: red
+          margin-left: 20px
+          .name
+            font-size: 14px
+            line-height: 1.5
+          .des
+            font-size: 13px
+            line-height: 2
+            margin-top: 16px
   .meeting-bottom
     position: fixed
     z-index: 10
@@ -229,7 +310,7 @@ export default {
       flex: 1
       display: flex
       flex-direction: column
-      justify-content: center   
+      justify-content: center
       align-items: center
       color: #808080
       span
