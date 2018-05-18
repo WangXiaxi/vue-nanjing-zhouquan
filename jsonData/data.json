@@ -176,5 +176,13 @@
 			}
 
 		]
+	},
+	"getNewsDetail": {
+		"code": 1,
+		"data": {
+			"image": "../../../jsonData/banner.png",
+			"title": "2018区块链拥抱未来全球高峰论坛",
+			"distance_time": "1天3时20分"
+		}
 	}
 }

@@ -22,7 +22,10 @@ export default new Router({
     { // 网站首页路由
       path: '/meeting',
       name: 'Meeting',
-      component: Meeting
+      component: Meeting,
+      meta: {
+        noShowFooter: true
+      }
     }
   ]
 })

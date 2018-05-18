@@ -1,7 +1,7 @@
 <template>
   <div class="home child-view">
     <div class="box-all">
-      <!-- 头先不写 -->
+      <!-- header -->
       <div class="home-header">
         <div class="locat">{{curCity}}</div>
         <div class="model-input">
@@ -13,6 +13,7 @@
             </swiper>
           </div>
         </div>
+        <a class="dy">订阅</a>
       </div>
       <!-- banner -->
       <div class="home-banner">
@@ -265,9 +266,18 @@ export default {
       max-width: 90px
       overflow: hidden
       bg-image("~common/images/scraqe")
+    .dy
+      margin-left: 16px
+      margin-right: 16px
+      font-size: 16px
+      color: #fff
+      line-height: 0
+      padding: 15px 0 15px 0
+      letter-spacing: 1px
     .model-input
       margin-left: 10px
-      width: 232px
+      flex: 1
+      width: 0
       background: rgba(255, 255, 255, .7)
       height: 30px
       border-radius: 30px
