@@ -1,5 +1,5 @@
 <template>
-  <a class="news-items">
+  <router-link :to="`/meeting?id=${newsInfo.data_id}`" class="news-items">
     <div class="img-box">
       <img :src="newsInfo.image">
       <div class="tips-live" v-if="Number(newsInfo.type) === 1"></div>
@@ -14,7 +14,7 @@
       <div class="price">¥{{newsInfo.price}}起</div>
       <div class="time">{{newsInfo.end_time}}</div>
     </div>
-  </a>
+  </router-link>
 </template>
 
 <script type="text/ecmascript-6">
@@ -48,11 +48,12 @@ export default {
       background: #f5f5f5
     .tips-live
       position: absolute
-      width: 36px
+      width: 35px
       height: 14px
-      background: red
-      top: 3px
-      left: 3px
+      background: 50% 50%/100% 100% no-repeat
+      bg-image("~common/images/live")
+      top:4px
+      left: 4px
     .tips-bot
       position: absolute
       bottom: 0
@@ -82,6 +83,9 @@ export default {
       bottom: 27px
       left: 0
       line-height: 1.4
+      background: left 1px/14px auto no-repeat
+      padding-left: 18px
+      bg-image("~common/images/eyes")
     .price
       color: #de0015
       position: absolute
@@ -94,4 +98,7 @@ export default {
       color: #f0303a
       right: 0
       line-height: 1.4
+      padding-left: 16px
+      background: left 2px/10px auto no-repeat
+      bg-image("~common/images/33")
 </style>

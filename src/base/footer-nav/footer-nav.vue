@@ -51,6 +51,7 @@ export default {
             bg-image("./images/nav1")
           &.nav-2
             bg-image("./images/nav2")
+            background-size: auto 17px
           &.nav-3
             bg-image("./images/nav3")
           &.nav-4

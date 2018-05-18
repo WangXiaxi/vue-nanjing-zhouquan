@@ -81,7 +81,6 @@ export default {
       swiperOptionSearch: {
         direction: 'vertical',
         speed: 300,
-        spaceBetween: 10,
         autoplay: 5000,
         autoplayDisableOnInteraction: false
       },
@@ -209,23 +208,27 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-.swiper-container-horizontal
-  .home-swiper-pagination
-    position: absolute
-    z-index: 1
-    text-align: center
-    bottom: 6px !important
-    .swiper-pagination-bullet
-      margin: 0 3px
-      width: 6px
-      height: 6px
-      opacity: 1
-      background: RGB(204, 204, 204)
-      transition: all 0.3s
-      &.swiper-pagination-bullet-active
-        background: RGB(255, 255, 255)
-        width: 12px
-        border-radius: 5px
+.home
+  .swiper-container-horizontal
+    .home-swiper-pagination
+      position: absolute
+      z-index: 1
+      text-align: center
+      bottom: 6px !important
+      .swiper-pagination-bullet
+        margin: 0 3px
+        width: 6px
+        height: 6px
+        opacity: 1
+        background: RGB(204, 204, 204)
+        transition: all 0.3s
+        &.swiper-pagination-bullet-active
+          background: RGB(255, 255, 255)
+          width: 12px
+          border-radius: 5px
+  .swiper-container-vertical
+    .swiper-wrapper
+      height: 30px
 </style>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
@@ -250,13 +253,18 @@ export default {
     width: 100%
     display: flex
     padding-top: 6px
+    padding-bottom: 6px
     .locat
       margin-left: 16px
       font-size: 16px
       color: #fff
-      line-height: 30px
-      padding-right: 20px
+      line-height: 0
+      padding: 15px 20px 15px 0
       letter-spacing: 1px
+      background: right center/12px auto no-repeat
+      max-width: 90px
+      overflow: hidden
+      bg-image("~common/images/scraqe")
     .model-input
       margin-left: 10px
       width: 232px
@@ -264,9 +272,10 @@ export default {
       height: 30px
       border-radius: 30px
       padding-right: 30px
+      background: rgba(255, 255, 255, .7) right 10px center/14px auto no-repeat
+      bg-image("~common/images/search")
       .search-swiper
         width: 100%
-        height: 30px
         overflow: hidden
         position: relative
         .swiper-slide
