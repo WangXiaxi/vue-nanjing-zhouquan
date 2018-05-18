@@ -6,9 +6,9 @@
         <div class="locat">{{curCity}}</div>
         <div class="model-input">
           <div class="search-swiper">
-            <swiper :options="swiperOptionSearch" ref="SearchSwiper">
+            <swiper :options="swiperOptionSearch" ref="searchSwiper" v-if="optionSearch.length>0">
               <swiper-slide v-for="(item, index) in optionSearch" :key="index">
-                <a>{{item.title}}</a>
+                <a>{{item.words}}</a>
               </swiper-slide>
             </swiper>
           </div>
@@ -17,36 +17,38 @@
       <!-- banner -->
       <div class="home-banner">
         <div class="banner-swiper">
-          <swiper :options="swiperOptionBanner" ref="bannerSwiper">
+          <swiper :options="swiperOptionBanner" ref="bannerSwiper" v-if="optionBanner.length>0">
             <swiper-slide v-for="(item, index) in optionBanner" :key="index">
-              <a :href="item.url"><img src="http://www.51ehang.com/upload/2018/05/11/20180511091519216.jpg"></a>
+              <a :href="item.url"><img :src="item.image"></a>
             </swiper-slide>
             <div class="home-swiper-pagination" slot="pagination"></div>
           </swiper>
         </div>
       </div>
       <!-- 滚动标签 -->
-      <div class="home-nav">
+      <div class="home-nav" v-if="optionNav.length>0">
         <div class="nav-scroll-box">
           <div class="nav-scroll">
-            <div class="item on">IT互联网</div>
-            <div class="item">医疗医学</div>
-            <div class="item">能源化工</div>
-            <div class="item">金融财经</div>
-            <div class="item">金融财经</div>
+            <div class="item" v-for="(item, index) in optionNav" :class="{on: navActive === index}" :key="index" @click="changeNewsList(index)">{{item.words}}</div>
           </div>
         </div>
       </div>
-      <div class="home-list">
-        <news-items></news-items>
-        <news-items></news-items>
-        <news-items></news-items>
-        <news-items></news-items>
-        <news-items></news-items>
-        <news-items></news-items>
+      <div class="home-list" v-if="optionNewsList.length>0"
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="load"
+          infinite-scroll-immediate-check="false"
+          infinite-scroll-distance="10"
+          ref="homeList"
+          :class="{scroll: needScroll}"
+      >
+
+        <news-items v-for="(item, index) in optionNewsList" :newsInfo="item" :key="index"></news-items>
         <LoadScroll :loadType="loadType"></LoadScroll>
       </div>
     </div>
+    <transition name="router-fade" mode="out-in">
+      <load-bg v-if="!allLoadEnd"></load-bg>
+    </transition>
   </div>
 </template>
 
@@ -54,11 +56,14 @@
 import { needMixin } from 'common/js/mixin'
 import NewsItems from 'base/news-items/news-items'
 import LoadScroll from 'base/load-scroll/load-scroll'
+import LoadBg from 'base/load-bg/load-bg'
+import { getHomeBanner, getHomeNav, getNewsList, getHomeKeyWords } from '@/api/api.js' // 获取数据接口采用多条http请求
 export default {
   mixins: [needMixin],
   components: {
     NewsItems,
-    LoadScroll
+    LoadScroll,
+    LoadBg
   },
   data () {
     return {
@@ -81,22 +86,123 @@ export default {
         autoplayDisableOnInteraction: false
       },
       curCity: '全国', // 当前城市
-      optionSearch: [{title: '国际互联网峰会'}, {title: 'JavaScript入门到放弃'}, {title: 'php要饭技巧'}],
-      optionBanner: [{url: 'www'}, {url: 'www'}], // 轮播数据
-      loadType: 1
+      optionSearch: [],
+      optionBanner: [], // 轮播数据
+      optionNav: [], // NAV数据
+      optionNewsList: [], // 列表数据
+      navActive: 0, // 当前导航
+      loadType: 1, // 加载更多标签
+      load: true,
+      queryData: { // 查询文章数据
+        page: 1 // 参数1
+      },
+      needScroll: true,
+      allLoadEnd: false // 全部加载完成
     }
   },
   created () {
-
+    this._getAllData()
+  },
+  methods: {
+    changeNewsList (index) { // 点击执行数据刷新
+      this.loading.open({
+        spinnerType: 'snake'
+      })
+      this.needScroll = false
+      this.navActive = index
+      // 初始化列表数据
+      this.queryData = Object.assign({}, { page: 1 })
+      let query = Object.assign({}, this.queryData, this.optionNav[this.navActive])
+      getNewsList(query).then((res) => {
+        setTimeout(() => {
+          this.needScroll = true
+          this.optionNewsList = res.data
+          this.$refs.homeList.scrollTop = 0
+          this.loading.close()
+        }, 700)
+      })
+    },
+    _getAllData () { // 数据获取
+      let promise1 = new Promise((resolve, reject) => {
+        // 获取轮播数据
+        getHomeBanner().then((res) => {
+          if (res.code === 1) {
+            this.optionBanner = res.data
+            resolve(res.data)
+          } else {
+            console.error('数据加载失败')
+          }
+        })
+      })
+      let promise2 = new Promise((resolve, reject) => {
+        // 获取首屏底部文章数据
+        getHomeNav().then((res) => {
+          if (res.code === 1) {
+            this.optionNav = res.data
+            let query = Object.assign({}, this.queryData, this.optionNav[0])
+            getNewsList(query).then((resc) => {
+              if (res.code === 1) {
+                this.optionNewsList = resc.data
+                resolve(resc.data)
+              } else {
+                console.error('数据加载失败')
+              }
+            })
+          } else {
+            console.error('数据加载失败')
+          }
+        })
+      })
+      let promise3 = new Promise((resolve, reject) => {
+        // 获取首屏关键词数据
+        getHomeKeyWords().then((res) => {
+          if (res.code === 1) {
+            this.optionSearch = res.data
+            resolve(res.data)
+          } else {
+            console.error('数据加载失败')
+          }
+        })
+      })
+      let promiseAll = Promise.all([promise1, promise2, promise3])
+      promiseAll.then(() => {
+        // 所有数据完成后执行
+        setTimeout(() => {
+          this.allLoadEnd = true
+          this.load = false // 允许滚动
+        }, 20)
+      })
+    },
+    loadMore () {
+      this.load = true
+      this.queryData.page = this.queryData.page + 1
+      let query = Object.assign({}, this.queryData, this.optionNav[this.navActive])
+      getNewsList(query).then((res) => {
+        this.optionNewsList = this.optionNewsList.concat(res.data)
+        if (res.data.length < 10) { // 数据每页10条
+          this.load = true
+          this.loadType = 2
+        } else {
+          this.load = false
+          this.loadType = 1
+        }
+      })
+    }
   },
   deactivated () {
     if (this.$refs.bannerSwiper) { // 优化路由跳转轮播定时器bug
       this.$refs.bannerSwiper.swiper.stopAutoplay()
     }
+    if (this.$refs.searchSwiper) { // 优化路由跳转轮播定时器bug
+      this.$refs.searchSwiper.swiper.stopAutoplay()
+    }
   },
   activated () {
     if (this.$refs.bannerSwiper) { // 优化路由跳转轮播定时器bug
       this.$refs.bannerSwiper.swiper.startAutoplay()
+    }
+    if (this.$refs.searchSwiper) { // 优化路由跳转轮播定时器bug
+      this.$refs.searchSwiper.swiper.startAutoplay()
     }
   }
 }
@@ -123,6 +229,10 @@ export default {
 </style>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+.router-fade-leave-active
+  transition: opacity .3s
+.router-fade-enter, .router-fade-leave-active
+  opacity: 0
 @import "~common/stylus/mixin"
 .home
   background: #f5f5f5
@@ -222,13 +332,15 @@ export default {
               background: #ef011d
   .home-list
     position: absolute
-    -webkit-overflow-scrolling: touch
     top: 211px
     bottom: 0
     background: #fff
     width: 100%
     overflow-x: hidden
     overflow-y: auto
+    -webkit-overflow-scrolling: auto
+    &.scroll
+      -webkit-overflow-scrolling: touch
     .news-items
       border-bottom: 1px solid #ededed
       &:last-child

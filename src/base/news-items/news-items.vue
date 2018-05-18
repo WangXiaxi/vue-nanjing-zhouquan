@@ -1,24 +1,24 @@
 <template>
   <a class="news-items">
     <div class="img-box">
-      <img src="http://www.51ehang.com/upload/2018/05/11/20180511091519216.jpg">
-      <div class="tips-live"></div>
+      <img :src="newsInfo.image">
+      <div class="tips-live" v-if="Number(newsInfo.type) === 1"></div>
       <div class="tips-bot">
-        <div class="le">上海</div>
-        <div class="ri">2018-05-19</div>
+        <div class="le">{{newsInfo.location}}</div>
+        <div class="ri">{{newsInfo.time}}</div>
       </div>
     </div>
     <div class="info-box">
-      <h3>2018区块链拥抱未来全球高峰论坛2018区块链拥抱未来全球高峰论坛2018区块链拥抱未来全球高峰论坛</h3>
-      <div class="eyes">543443</div>
-      <div class="price">¥300起</div>
-      <div class="time">2天3时50分</div>
+      <h3>{{newsInfo.title}}</h3>
+      <div class="eyes">{{newsInfo.eyes}}</div>
+      <div class="price">¥{{newsInfo.price}}起</div>
+      <div class="time">{{newsInfo.end_time}}</div>
     </div>
   </a>
 </template>
 
 <script type="text/ecmascript-6">
-import { URL } from '@/api/config'
+
 export default {
   props: {
     newsInfo: {
