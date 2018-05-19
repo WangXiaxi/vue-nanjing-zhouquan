@@ -250,8 +250,8 @@ export default {
     position: fixed
     z-index: 100
     height: 44px
-    // background: red
     width: 100%
+    max-width: 750px; /*no*/
     display: flex
     padding-top: 6px
     padding-bottom: 6px

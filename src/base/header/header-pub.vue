@@ -40,6 +40,7 @@ export default {
   max-width: 750px; /*no*/
   z-index: 10
   &:after
+    display: none
     line-scale()
   &.red
     background: url("~common/images/bg.png") 50% 50%/100% 100% no-repeat
@@ -54,6 +55,7 @@ export default {
     width: 100%
     line-height: 42px
     font-size: 18px
+    color: #f53e3e
   .go-back
     width: 42px
     height: 42px
@@ -61,6 +63,7 @@ export default {
     left: 0
     top: 0
     background: 50% 50%/10px 18px no-repeat
+    bg-image("~common/images/goback-normal")
   .right-btn
     position: absolute
     right: 12px

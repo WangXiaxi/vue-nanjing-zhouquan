@@ -82,6 +82,7 @@ export default {
       position: absolute
       bottom: 27px
       left: 0
+      color: #808080
       line-height: 1.4
       background: left 1px/14px auto no-repeat
       padding-left: 18px
