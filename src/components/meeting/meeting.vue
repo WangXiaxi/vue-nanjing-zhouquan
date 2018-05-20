@@ -145,6 +145,7 @@ export default {
     background: none
   .mint-popup-bottom
     width: 100%
+    max-width: 750px; /*no*/
     height: 350px
     background: #fff
 .mint-toast.is-placemiddle // 要比mint-popup大
@@ -302,7 +303,7 @@ export default {
     bottom: 0
     height: 42px
     width: 100%
-    max-width: 750px /*no*/
+    max-width: 750px; /*no*/
     background: #fff
     display: flex
     text-align: center

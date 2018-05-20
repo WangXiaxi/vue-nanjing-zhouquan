@@ -51,10 +51,23 @@
       </div>
     </div>
      <!-- 支付 -->
-    <div class="sure-zf">
+    <div class="sure-zf card-box">
+      <div class="title">
+        <h2>支付方式</h2>
+      </div>
+      <div class="zf-list" :class="`zf-type-${chooseZfType}`">
+        <mt-radio
+          v-model="chooseZfType"
+          :max="1"
+          align="right"
+          :options="optionsZf">
+        </mt-radio>
+      </div>
     </div>
     <!-- 底部fix -->
     <div class="sure-btn">
+      <div class="sum-box">总计：<span class="sum">¥3000.00</span></div>
+      <div class="submit-btn">确认支付</div>
     </div>
   </div>
 </template>
@@ -69,17 +82,35 @@ export default {
   },
   data () {
     return {
-      needFp: false // 是否需要发票
+      needFp: false, // 是否需要发票
+      chooseZfType: '',
+      optionsZf: [
+        {
+          label: '微信支付',
+          value: '1'
+        },
+        {
+          label: '支付宝',
+          value: '2'
+        },
+        {
+          label: '对公转账',
+          value: '3'
+        }
+      ]
     }
   },
   created () {
   },
   methods: {
+  },
+  watch: {
   }
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 @import "~common/stylus/mixin"
+// 对mint swich 改造
 .mint-switch-input:checked + .mint-switch-core::before
   transform: none
 .mint-switch-core::before
@@ -100,11 +131,53 @@ export default {
   width: 50px
   border-radius: 16px
   box-shadow: none
-  background: #f53e3e
+  background: #999999
+  transition: all .3s
 .mint-switch-input:checked + .mint-switch-core::after
   transform: translateX(50px)
+  background: #f53e3e
 .mint-switch-input:checked + .mint-switch-core
   background-color: #f7f7f7
+// 对按钮改造
+.zf-list
+  .mint-cell-wrapper
+    background: #fff
+    padding: 0 0
+    .mint-radiolist-label
+      padding: 0 10px 0 0
+      .mint-radio-label
+        display: block
+        height: 40px
+        padding-left: 40px
+        line-height: 40px
+        color: #808080
+      .mint-radio
+        margin-top: 10px
+  .mint-cell:first-of-type
+    .mint-radio-label
+      background: url("~common/images/wx.png") left center/auto 30px no-repeat
+  .mint-cell:nth-of-type(2)
+    .mint-radio-label
+      background: url("~common/images/zfb.png") 2px center/auto 28px no-repeat
+  .mint-cell:nth-of-type(3)
+    .mint-radio-label
+      background: url("~common/images/gdg.png") 2px center/28px auto no-repeat
+  .mint-radio-input:checked + .mint-radio-core
+    background: #f53e3e
+    border-color: #f53e3e
+// 支付方式文字高亮无法通过自定义 想点办法解决了
+.zf-type-1
+  .mint-cell:first-of-type
+    .mint-radio-label
+      color: #333
+.zf-type-2
+  .mint-cell:nth-of-type(2)
+    .mint-radio-label
+      color: #333
+.zf-type-3
+  .mint-cell:nth-of-type(3)
+    .mint-radio-label
+      color: #333
 </style>
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import "~common/stylus/mixin"
@@ -258,4 +331,31 @@ export default {
         bg-image("~common/images/fp-type-1")
       &.fp-type-2
         bg-image("~common/images/fp-type-2")
+  .sure-btn
+    position: fixed
+    bottom: 0
+    height: 42px
+    width: 100%
+    max-width: 750px; /*no*/
+    display: flex
+    background: #fff
+    box-shadow: 0 0 5px #f7ebeb
+    .sum-box
+      flex: 1
+      width: 0
+      text-align: center
+      line-height: 42px
+      font-size: 14px
+      white-space:nowrap
+      .sum
+        font-size: 16px
+        color: #ff3636
+    .submit-btn
+      text-align: center
+      background: #ff3636
+      line-height: 42px
+      color: #fff
+      font-size: 16px
+      letter-spacing: 0.5px
+      width: 185px
 </style>
