@@ -83,8 +83,8 @@ export default {
   data () {
     return {
       needFp: false, // 是否需要发票
-      chooseZfType: '',
-      optionsZf: [
+      chooseZfType: '1', // 支付类型
+      optionsZf: [ // 支付选择 图标固定死了
         {
           label: '微信支付',
           value: '1'
@@ -183,6 +183,7 @@ export default {
 @import "~common/stylus/mixin"
 .sure-order
   padding-top: 52px
+  padding-bottom: 52px
   .sure-goods
     height: 119px
     display: flex
@@ -336,7 +337,8 @@ export default {
     bottom: 0
     height: 42px
     width: 100%
-    max-width: 750px; /*no*/
+    max-width: 750px; /*no*/ // 这个冒号必须要 不转rem
+    z-index: 10
     display: flex
     background: #fff
     box-shadow: 0 0 5px #f7ebeb
