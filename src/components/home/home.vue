@@ -137,6 +137,7 @@ export default {
       let promise2 = new Promise((resolve, reject) => {
         // 获取首屏底部文章数据
         getHomeNav().then((res) => {
+          // 获取首屏底部文章导航数据
           if (res.code === 1) {
             this.optionNav = res.data
             let query = Object.assign({}, this.queryData, this.optionNav[0])

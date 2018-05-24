@@ -5,9 +5,7 @@
       <a v-for="(item, index) in navArray" :key="index" @click="addPath(item)" :class="{on: item.id === navActive}" class="item">{{item.name}}</a>
     </div>
     <!-- 订单列表 -->
-    <div class="">
-      <router-view></router-view>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -21,7 +19,7 @@ export default {
   },
   data () {
     return {
-      navArray: [{'id': 1, 'name': '全部'},{'id': 2, 'name': '待支付'},{'id': 3, 'name': '审核中'},{'id': 4, 'name': '待发货'},{'id': 5, 'name': '待收货'}], // 导航选项
+      navArray: [{'id': 1, 'name': '全部'}, {'id': 2, 'name': '待支付'}, {'id': 3, 'name': '审核中'}, {'id': 4, 'name': '待发货'}, {'id': 5, 'name': '待收货'}], // 导航选项
       navActive: 1 // 默认导航的id
     }
   },

@@ -42,6 +42,9 @@ export default new Router({
       path: '/order',
       name: 'Order',
       component: Order,
+      meta: {
+        noShowFooter: true
+      },
       children: [
         {
           path: '',
