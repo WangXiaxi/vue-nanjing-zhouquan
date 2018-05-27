@@ -47,7 +47,7 @@ export default new Router({
       },
       children: [
         {
-          path: '',
+          path: '/',
           component: OrderChildren,
           meta: {
             noShowFooter: true

@@ -54,7 +54,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import "~common/stylus/mixin"
 .order
-  padding-top: 92px
+  padding-top: 82px
   .order-nav
     width: 100%
     max-width: 750px; /*no*/
