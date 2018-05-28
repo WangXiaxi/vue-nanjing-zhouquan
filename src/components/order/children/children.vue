@@ -13,7 +13,6 @@
           </div>
           <div class="o-goods-box">
             <div class="img-box">
-              
             </div>
             <div class="info-box">
               <h2>2018区块链拥抱未来全球高峰论坛入场票</h2>
@@ -23,10 +22,10 @@
           </div>
           <div class="o-btn">
             <a class="btn red fl">去支付</a>
-            <a class="btn red fl">催单</a><!-- 
-            <a class="btn red fl">再次购买</a> -->
+            <a class="btn red fl">催单</a>
+            <!-- <a class="btn red fl">再次购买</a> -->
             <a class="btn red fr">评价</a>
-            <a class="btn fr">删除订单</a>      
+            <a class="btn fr">删除订单</a>    
           </div>
         </div>
       </div>
@@ -90,7 +89,6 @@ export default {
   },
   watch: {
     $route () {
-      
     }
   }
 }

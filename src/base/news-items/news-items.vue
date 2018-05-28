@@ -1,18 +1,18 @@
 <template>
   <router-link :to="`/meeting?id=${newsInfo.data_id}`" class="news-items">
     <div class="img-box">
-      <img :src="newsInfo.image">
-      <div class="tips-live" v-if="Number(newsInfo.type) === 1"></div>
+      <img :src="newsInfo.main_picture">
+      <div class="tips-live" v-if="Number(newsInfo.type_id) === 1"></div>
       <div class="tips-bot">
-        <div class="le">{{newsInfo.location}}</div>
-        <div class="ri">{{newsInfo.time}}</div>
+        <div class="le">{{newsInfo.conference_address}}</div>
+        <div class="ri">{{newsInfo.end_time}}</div>
       </div>
     </div>
     <div class="info-box">
-      <h3>{{newsInfo.title}}</h3>
-      <div class="eyes">{{newsInfo.eyes}}</div>
-      <div class="price">¥{{newsInfo.price}}起</div>
-      <div class="time">{{newsInfo.end_time}}</div>
+      <h3>{{newsInfo.conference_name}}</h3>
+      <div class="eyes">{{newsInfo.browseNum}}</div>
+      <div class="price">¥{{newsInfo.price}} 没参数 起</div>
+      <div class="time">{{newsInfo.dataDif}}</div>
     </div>
   </router-link>
 </template>

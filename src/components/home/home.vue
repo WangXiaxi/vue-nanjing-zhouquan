@@ -8,7 +8,7 @@
           <div class="search-swiper">
             <swiper :options="swiperOptionSearch" ref="searchSwiper" v-if="optionSearch.length>0">
               <swiper-slide v-for="(item, index) in optionSearch" :key="index">
-                <a>{{item.words}}</a>
+                <a>{{item.hotwords_name}}</a>
               </swiper-slide>
             </swiper>
           </div>
@@ -20,7 +20,7 @@
         <div class="banner-swiper">
           <swiper :options="swiperOptionBanner" ref="bannerSwiper" v-if="optionBanner.length>0">
             <swiper-slide v-for="(item, index) in optionBanner" :key="index">
-              <a :href="item.url"><img :src="item.image"></a>
+              <a :href="item.link"><img :src="item.picture_path"></a>
             </swiper-slide>
             <div class="home-swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -30,11 +30,11 @@
       <div class="home-nav" v-if="optionNav.length>0">
         <div class="nav-scroll-box">
           <div class="nav-scroll">
-            <div class="item" v-for="(item, index) in optionNav" :class="{on: navActive === index}" :key="index" @click="changeNewsList(index)">{{item.words}}</div>
+            <div class="item" v-for="(item, index) in optionNav" :class="{on: navActive === index}" :key="index" @click="changeNewsList(index)">{{item.class_name}}</div>
           </div>
         </div>
       </div>
-      <div class="home-list" v-if="optionNewsList.length>0"
+      <div class="home-list"
           v-infinite-scroll="loadMore"
           infinite-scroll-disabled="load"
           infinite-scroll-immediate-check="false"
@@ -114,21 +114,32 @@ export default {
       this.queryData = Object.assign({}, { page: 1 })
       let query = Object.assign({}, this.queryData, this.optionNav[this.navActive])
       getNewsList(query).then((res) => {
-        setTimeout(() => {
-          this.needScroll = true
-          this.optionNewsList = res.data
-          this.$refs.homeList.scrollTop = 0
-          this.loading.close()
-        }, 700)
+        if (res.result === true && res.dataList) {
+          setTimeout(() => {
+            this.needScroll = true
+            this.optionNewsList = res.dataList
+            if (res.dataList.length > 10) {
+              this.loadType = 1
+            }
+            this.$refs.homeList.scrollTop = 0
+            this.loading.close()
+          }, 700)
+        } else {
+          setTimeout(() => {
+            this.optionNewsList = []
+            this.loadType = 2
+            this.loading.close()
+          }, 700)
+        }
       })
     },
     _getAllData () { // 数据获取
       let promise1 = new Promise((resolve, reject) => {
         // 获取轮播数据
         getHomeBanner().then((res) => {
-          if (res.code === 1) {
-            this.optionBanner = res.data
-            resolve(res.data)
+          if (res.result === true) { // 后台规范 写的什么玩意儿后台 跨域都跨不过去
+            this.optionBanner = res.pic_info
+            resolve(res.pic_info)
           } else {
             console.error('数据加载失败')
           }
@@ -138,13 +149,16 @@ export default {
         // 获取首屏底部文章数据
         getHomeNav().then((res) => {
           // 获取首屏底部文章导航数据
-          if (res.code === 1) {
-            this.optionNav = res.data
-            let query = Object.assign({}, this.queryData, this.optionNav[0])
+          if (res.result === true) {
+            this.optionNav = res.class_info
+            let query = Object.assign({}, this.queryData, this.optionNav[0]) // 参数不高兴筛选
             getNewsList(query).then((resc) => {
-              if (res.code === 1) {
-                this.optionNewsList = resc.data
-                resolve(resc.data)
+              if (res.result === true && resc.dataList) {
+                this.optionNewsList = resc.dataList
+                if (resc.dataList.length < 10) {
+                  this.loadType = 2
+                }
+                resolve(resc.dataList)
               } else {
                 console.error('数据加载失败')
               }
@@ -157,9 +171,9 @@ export default {
       let promise3 = new Promise((resolve, reject) => {
         // 获取首屏关键词数据
         getHomeKeyWords().then((res) => {
-          if (res.code === 1) {
-            this.optionSearch = res.data
-            resolve(res.data)
+          if (res.result === true) {
+            this.optionSearch = res.hotwords
+            resolve(res.hotwords)
           } else {
             console.error('数据加载失败')
           }
