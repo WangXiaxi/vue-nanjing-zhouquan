@@ -1,20 +1,20 @@
 <template>
   <div class="meeting child-view">
     <div class="meeting-all">
-      <header-pub class="red" headerTitle="国际互联网体验峰会">
+      <header-pub class="red" :headerTitle="meetingData.conference_name">
         <a class="share-tip"></a>
       </header-pub>
       <div class="meeting-banner">
-        <div class="tips-live"></div>
-        <img src="../../../jsonData/banner.png">
+        <div class="tips-live" v-if="Number(meetingData.type_id) === 1"></div>
+        <img :src="meetingData.main_picture">
       </div>
       <div class="meeting-info">
-        <h2 class="title">2018区块链拥抱未来全球高峰论坛</h2>
-        <div class="end-time">距离开始：1天3时50分</div>
-        <div class="people-num">报名人数：1230人</div>
-        <div class="time">2018-05-26 - 2018-05-26</div>
-        <div class="location">上海  张扬北路5658号</div>
-        <div class="host">驱动力商学院</div>
+        <h2 class="title">{{meetingData.conference_name}}</h2>
+        <div class="end-time">{{meetingData.dataDif}}</div>
+        <div class="people-num">报名人数：{{meetingData.browseNum}}人</div>
+        <div class="time" v-if="meetingData.start_time">{{meetingData.start_time.slice(0, 10)}} - {{meetingData.end_time.slice(0, 10)}}</div>
+        <div class="location">{{meetingData.conference_address}}</div>
+        <div class="host">{{meetingData.conference_contact}}</div>
         <div class="tips-gohere"></div>
       </div>
       <div class="meeting-nav">
@@ -25,45 +25,24 @@
       </div>
       <div class="meeting-con">
         <div class="con" v-show="curShowNav === 1">
-          <img src="../../../jsonData/tianchong.png">
-          <p>随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试，随便写写测试测试测试随便写写测试测试测试</p>
+          {{meetingData.conference_introduction}}
         </div>
         <div class="con" v-show="curShowNav === 2">
-          <img src="../../../jsonData/tianchong.png">
-          <p>随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试，随便写写测试测试测试随便写写测试测试测试</p>
+         {{meetingData.agenda}}
         </div>
         <div class="con spec" v-show="curShowNav === 3">
-          <div class="item">
+          <div class="item" v-for="(item, index) in meetingData.guestList" :key="index" v-if="meetingData.guestList">
             <div class="img-box">
-              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
+              <img :src="item.photo">
             </div>
             <div class="info-box">
-              <div class="name">嘉宾：王笑笑</div>
-              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="img-box">
-              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
-            </div>
-            <div class="info-box">
-              <div class="name">嘉宾：王笑笑</div>
-              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="img-box">
-              <img src="http://p1.qzone.la/upload/20150102/a3zs6l69.jpg">
-            </div>
-            <div class="info-box">
-              <div class="name">嘉宾：王笑笑</div>
-              <div class="des">从事互联网行业多年，精通各种坑爹技术，在互联网行业发展中有居住其中的作用，哈哈哈哈哈哈哈哈哈</div>
+              <div class="name">嘉宾：{{item.guest_name}}</div>
+              <div class="des">{{item.guest_des}}</div>
             </div>
           </div>
         </div>
         <div class="con" v-show="curShowNav === 4">
-          <img src="../../../jsonData/tianchong.png">
-          <p>随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试随便写写测试测试测试，随便写写测试测试测试随便写写测试测试测试</p>
+          {{meetingData.conference_guide}}
         </div>
       </div>
       <!-- 底部fixed -->
@@ -99,6 +78,8 @@
 import { needMixin } from 'common/js/mixin'
 import HeaderPub from 'base/header/header-pub'
 import GoodsSpec from 'base/goods-spec/goods-spec'
+import { getConferenceInfoByConID } from '@/api/api.js'
+
 export default {
   mixins: [needMixin],
   components: {
@@ -108,7 +89,8 @@ export default {
   data () {
     return {
       curShowNav: 1, // 显示当前是哪个导航
-      popupVisible: false // 显示购买规格
+      popupVisible: false, // 显示购买规格
+      meetingData: {}
     }
   },
   created () {
@@ -116,7 +98,17 @@ export default {
   },
   methods: {
     _getAllData () {
-
+      getConferenceInfoByConID(this.$route.query).then((res) => {
+        if (res.result === true && res.dataList) {
+          this.meetingData = res.dataList[0] // 数据是个什么鬼
+          console.log(this.meetingData)
+        } else {
+          this.toast('您访问的内容不存在！')
+          setTimeout(() => {
+            this.$router.go(-1)
+          }, 2000)
+        }
+      })
     },
     buyNow (query) { // 立即购买操作
       this.loading.open({ // 添加等待
@@ -218,6 +210,7 @@ export default {
     .time
       background: url("~common/images/time.png") left center/14px auto no-repeat
     .location
+      width: 70%
       background: url("~common/images/locat.png") 1px center/12px auto no-repeat
     .host
       background: url("~common/images/mine.png") left center/14px auto no-repeat

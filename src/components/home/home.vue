@@ -150,7 +150,7 @@ export default {
         getHomeNav().then((res) => {
           // 获取首屏底部文章导航数据
           if (res.result === true) {
-            this.optionNav = res.class_info
+            this.optionNav = res.dataList
             let query = Object.assign({}, this.queryData, this.optionNav[0]) // 参数不高兴筛选
             getNewsList(query).then((resc) => {
               if (res.result === true && resc.dataList) {
@@ -172,7 +172,7 @@ export default {
         // 获取首屏关键词数据
         getHomeKeyWords().then((res) => {
           if (res.result === true) {
-            this.optionSearch = res.hotwords
+            this.optionSearch = res.dataList
             resolve(res.hotwords)
           } else {
             console.error('数据加载失败')

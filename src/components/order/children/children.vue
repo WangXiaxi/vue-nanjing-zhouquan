@@ -25,7 +25,7 @@
             <a class="btn red fl">催单</a>
             <!-- <a class="btn red fl">再次购买</a> -->
             <a class="btn red fr">评价</a>
-            <a class="btn fr">删除订单</a>    
+            <a class="btn fr">删除订单</a>
           </div>
         </div>
       </div>

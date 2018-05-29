@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/meeting?id=${newsInfo.data_id}`" class="news-items">
+  <router-link :to="`/meeting?con_id=${newsInfo.conference_id}`" class="news-items">
     <div class="img-box">
       <img :src="newsInfo.main_picture">
       <div class="tips-live" v-if="Number(newsInfo.type_id) === 1"></div>
@@ -25,6 +25,9 @@ export default {
       type: Object,
       dafault: {}
     }
+  },
+  created () {
+    console.log(this.newsInfo)
   },
   methods: {
   }
